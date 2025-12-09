@@ -1,0 +1,158 @@
+[
+  {
+    "test_id": 1,
+    "description": "Pregunta general sobre concepto básico",
+    "query": "¿Qué es la agricultura sostenible?",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "response": "**Agricultura Sostenible: Un Enfoque para el Futuro**\n\nLa agricultura sostenible se refiere a un conjunto de prácticas y técnicas que buscan producir alimentos de manera eficiente y respetuosa con el medio ambiente, la sociedad y la economía. Este enfoque prioriza la salud del suelo, la biodiversidad, el uso eficiente del agua y la energía, y la minimización de residuos y contaminantes.\n\n**Objetivos de la Agricultura Sostenible**\n\nLos objetivos principales de la agricultura sostenible son:\n\n1. **Proteger el medio ambiente**: Conservar y mejorar la calidad del suelo, el agua y el aire, y preservar la biodiversidad.\n2. **Garantizar la seguridad alimentaria**: Producir alimentos saludables y accesibles para todos, mientras se minimiza el impacto ambiental.\n3. **Fomentar la justicia social**: Proporcionar condiciones laborales justas y seguras para los trabajadores agrícolas, y apoyar a las comunidades rurales.\n4. **Promover la economía local**: Estimular la economía local y nacional a través de la producción y comercialización de productos agrícolas sostenibles.\n\n**Técnicas y Prácticas de la Agricultura Sostenible**\n\nAlgunas de las técnicas y prácticas más comunes en la agricultura sostenible incluyen:\n\n* **Agricultura orgánica**: No utilizar productos químicos sintéticos ni fertilizantes artificiales.\n* **Rotación de cultivos**: Cambiar los cultivos para mantener la fertilidad del suelo y reducir la erosión.\n* **Uso de cubiertas vegetales**: Plantar cultivos que protegen el suelo y atraen beneficiosos insectos y microorganismos.\n* **Riego eficiente**: Utilizar sistemas de riego que minimizan el desperdicio de agua.\n* **Control biológico**: Utilizar métodos naturales para controlar plagas y enfermedades.\n\n**Beneficios de la Agricultura Sostenible**\n\nLa agricultura sostenible ofrece numerosos beneficios, incluyendo:\n\n* **Mejora de la calidad del suelo**: La agricultura sostenible ayuda a mantener la fertilidad y la estructura del suelo.\n* **Conservación del agua**: La agricultura sostenible reduce el uso de agua y minimiza la contaminación.\n* **Reducción de gases de efecto invernadero**: La agricultura sostenible puede ayudar a reducir las emisiones de gases de efecto invernadero.\n* **Mejora de la biodiversidad**: La agricultura sostenible promueve la conservación de la biodiversidad y la protección de los ecosistemas.\n\nEn resumen, la agricultura sostenible es un enfoque que busca producir alimentos de manera responsable y respetuosa con el medio ambiente, la sociedad y la economía. Al adoptar prácticas y técnicas sostenibles, podemos garantizar un futuro más próspero y saludable para todos.",
+    "documents_used": 0,
+    "verification": {
+      "es_valida": true,
+      "confianza": 1.0
+    },
+    "duration_seconds": 4.210018,
+    "trace": [
+      {
+        "timestamp": "2025-12-09T16:41:52.347629",
+        "event": "query_received",
+        "query": "¿Qué es la agricultura sostenible?"
+      },
+      {
+        "timestamp": "2025-12-09T16:41:52.911914",
+        "agent": "QueryClassifier",
+        "action": "classify_intent",
+        "details": {
+          "query": "¿Qué es la agricultura sostenible?",
+          "clasificacion": {
+            "intencion": "general",
+            "confianza": 0.95,
+            "razonamiento": "La pregunta busca una definición o explicación general de un concepto, sin requerir información específica de un documento en particular."
+          }
+        }
+      },
+      {
+        "timestamp": "2025-12-09T16:41:52.914594",
+        "agent": "Orchestrator",
+        "action": "route_query",
+        "details": {
+          "intent": "general"
+        }
+      },
+      {
+        "timestamp": "2025-12-09T16:41:56.554582",
+        "agent": "Orchestrator",
+        "action": "handle_general_query",
+        "details": {
+          "response_length": 2634
+        }
+      }
+    ],
+    "success": true,
+    "timestamp": "2025-12-09T16:41:52.344613"
+  },
+  {
+    "test_id": 5,
+    "description": "Pregunta conceptual general",
+    "query": "Explícame qué es la rotación de cultivos",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "response": "¡Claro! La rotación de cultivos es una práctica agrícola que implica cambiar el tipo de cultivo que se planta en un mismo terreno en diferentes temporadas o años. Esto se hace para mantener la fertilidad del suelo, reducir la presencia de plagas y enfermedades, y mejorar la productividad y sostenibilidad de la agricultura.\n\n**Beneficios de la rotación de cultivos:**\n\n1. **Mantenimiento de la fertilidad del suelo**: Al cambiar el tipo de cultivo, se evita la depleción de nutrientes específicos en el suelo. Por ejemplo, si se planta maíz en un terreno durante varios años, el suelo puede agotarse de nitrógeno. Al rotar con un cultivo leguminoso, como la soja, se devuelve nitrógeno al suelo.\n2. **Reducción de plagas y enfermedades**: La rotación de cultivos ayuda a romper el ciclo de vida de plagas y enfermedades que se alimentan de un cultivo específico. Al cambiar el cultivo, se reduce la presencia de estos problemas y se minimiza el uso de pesticidas y fungicidas.\n3. **Mejora de la estructura del suelo**: La rotación de cultivos puede ayudar a mejorar la estructura del suelo, aumentando su porosidad y reduciendo la compactación. Esto permite una mejor infiltración de agua y aires, lo que beneficia a los cultivos.\n4. **Incremento de la biodiversidad**: La rotación de cultivos puede aumentar la biodiversidad en el agroecosistema, ya que se introducen diferentes especies de plantas y animales que se benefician de la variedad de cultivos.\n5. **Reducción del uso de insumos**: La rotación de cultivos puede reducir la necesidad de fertilizantes y pesticidas, lo que puede ayudar a reducir los costos de producción y minimizar el impacto ambiental.\n\n**Ejemplos de rotación de cultivos:**\n\n1. Maíz-soja: Se planta maíz en un año y soja en el siguiente.\n2. Trigo-cereal: Se planta trigo en un año y un cereal como la cebada o el centeno en el siguiente.\n3. Alfalfa-pasto: Se planta alfalfa en un año y pasto en el siguiente.\n4. Rotación de cultivos en huertas: Se planta una variedad de cultivos como lechugas, espinacas, zanahorias y tomates, rotándolos en diferentes temporadas.\n\nEn resumen, la rotación de cultivos es una práctica agrícola que busca mantener la fertilidad del suelo, reducir la presencia de plagas y enfermedades, y mejorar la productividad y sostenibilidad de la agricultura. Al cambiar el tipo de cultivo en un mismo terreno, se pueden obtener numerosos beneficios para el suelo, el medio ambiente y la economía.",
+    "documents_used": 0,
+    "verification": {
+      "es_valida": true,
+      "confianza": 1.0
+    },
+    "duration_seconds": 3.542438,
+    "trace": [
+      {
+        "timestamp": "2025-12-09T16:41:59.907822",
+        "event": "query_received",
+        "query": "Explícame qué es la rotación de cultivos"
+      },
+      {
+        "timestamp": "2025-12-09T16:42:00.402974",
+        "agent": "QueryClassifier",
+        "action": "classify_intent",
+        "details": {
+          "query": "Explícame qué es la rotación de cultivos",
+          "clasificacion": {
+            "intencion": "general",
+            "confianza": 0.95,
+            "razonamiento": "La pregunta es general y no requiere buscar en documentos específicos, se trata de un concepto agrícola básico"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-12-09T16:42:00.404532",
+        "agent": "Orchestrator",
+        "action": "route_query",
+        "details": {
+          "intent": "general"
+        }
+      },
+      {
+        "timestamp": "2025-12-09T16:42:03.447632",
+        "agent": "Orchestrator",
+        "action": "handle_general_query",
+        "details": {
+          "response_length": 2449
+        }
+      }
+    ],
+    "success": true,
+    "timestamp": "2025-12-09T16:41:59.905247"
+  },
+  {
+    "test_id": 8,
+    "description": "Pregunta de conocimiento general",
+    "query": "¿Qué es la agroecología?",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "response": "La agroecología es un enfoque holístico y sostenible para la producción de alimentos y la gestión de los ecosistemas agrícolas. Se basa en la aplicación de principios ecológicos para diseñar y manejar sistemas agrícolas que sean más respetuosos con el medio ambiente, socialmente justos y económicamente viables.\n\nLa agroecología busca promover la biodiversidad, la fertilidad del suelo, la conservación del agua y la gestión de los recursos naturales de manera sostenible. También se enfoca en la producción de alimentos saludables y nutritivos, y en la promoción de la soberanía alimentaria y la justicia social en las comunidades rurales.\n\nAlgunos de los principios clave de la agroecología incluyen:\n\n1. **Diversidad**: Promover la diversidad de cultivos, animales y microorganismos en los sistemas agrícolas.\n2. **Ciclos cerrados**: Diseñar sistemas que minimicen la entrada de recursos externos y maximicen la reutilización y el reciclaje de los recursos.\n3. **Uso eficiente del agua**: Implementar prácticas que conserven y optimicen el uso del agua en la agricultura.\n4. **Gestión del suelo**: Promover la salud y la fertilidad del suelo a través de prácticas como la rotación de cultivos, la incorporación de materia orgánica y la reducción del uso de agroquímicos.\n5. **Control biológico**: Utilizar métodos biológicos para controlar las plagas y enfermedades en lugar de recurrir a productos químicos.\n6. **Participación comunitaria**: Fomentar la participación y la organización de las comunidades rurales en la toma de decisiones y la gestión de los sistemas agrícolas.\n\nLa agroecología ofrece numerosos beneficios, incluyendo:\n\n* **Mejora de la biodiversidad**: La agroecología promueve la diversidad de especies y ecosistemas, lo que puede ayudar a mantener la salud y la resiliencia de los sistemas agrícolas.\n* **Reducción del uso de agroquímicos**: La agroecología busca minimizar el uso de productos químicos y promover métodos más naturales y sostenibles para controlar las plagas y enfermedades.\n* **Mejora de la salud humana**: La agroecología se enfoca en la producción de alimentos saludables y nutritivos, lo que puede ayudar a mejorar la salud y el bienestar de las personas.\n* **Justicia social y económica**: La agroecología busca promover la justicia social y económica en las comunidades rurales, a través de la participación y la organización de los productores y las comunidades.\n\nEn resumen, la agroecología es un enfoque innovador y sostenible para la producción de alimentos y la gestión de los ecosistemas agrícolas, que busca promover la biodiversidad, la justicia social y la economía local, mientras se minimizan los impactos negativos en el medio ambiente.",
+    "documents_used": 0,
+    "verification": {
+      "es_valida": true,
+      "confianza": 1.0
+    },
+    "duration_seconds": 3.133593,
+    "trace": [
+      {
+        "timestamp": "2025-12-09T16:42:04.985181",
+        "event": "query_received",
+        "query": "¿Qué es la agroecología?"
+      },
+      {
+        "timestamp": "2025-12-09T16:42:05.474948",
+        "agent": "QueryClassifier",
+        "action": "classify_intent",
+        "details": {
+          "query": "¿Qué es la agroecología?",
+          "clasificacion": {
+            "intencion": "general",
+            "confianza": 0.95,
+            "razonamiento": "La pregunta es sobre un concepto o tema general, no requiere buscar en documentos específicos"
+          }
+        }
+      },
+      {
+        "timestamp": "2025-12-09T16:42:05.477812",
+        "agent": "Orchestrator",
+        "action": "route_query",
+        "details": {
+          "intent": "general"
+        }
+      },
+      {
+        "timestamp": "2025-12-09T16:42:08.116368",
+        "agent": "Orchestrator",
+        "action": "handle_general_query",
+        "details": {
+          "response_length": 2696
+        }
+      }
+    ],
+    "success": true,
+    "timestamp": "2025-12-09T16:42:04.982820"
+  }
+]
