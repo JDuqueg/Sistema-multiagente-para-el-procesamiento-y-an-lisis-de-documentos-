@@ -1,0 +1,16 @@
+langchain
+langchain-core
+langchain-community
+langgraph
+google-generativeai
+groq
+faiss-cpu
+pypdf
+beautifulsoup4
+lxml
+html2text
+unstructured
+python-dotenv
+rich
+fastapi
+uvicorn
