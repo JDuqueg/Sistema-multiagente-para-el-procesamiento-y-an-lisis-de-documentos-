@@ -130,7 +130,7 @@ Edita el archivo `.env`:
 
 ```env
 # API Keys
-GOOGLE_API_KEY=AIzaSyCkBEhiNP85HAvgDlTpPcUJl3UkCm3Aruc
+GOOGLE_API_KEY=tu_api_key_aqui
 GROQ_API_KEY=tu_api_key_aqui  # Obtén en https://console.groq.com/keys
 
 # Rutas (rutas relativas - portables)
