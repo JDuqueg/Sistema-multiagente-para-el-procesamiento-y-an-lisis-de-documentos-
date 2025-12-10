@@ -6,7 +6,7 @@
 
 ## 📋 Descripción
 
-Sistema multi-agente basado en LangChain 1.0 que implementa RAG (Retrieval Augmented Generation) para análisis inteligente de documentos. El sistema integra 5 agentes especializados utilizando los LLMs de Groq (familia Llama) de forma diferenciada según las necesidades de cada componente.
+Sistema multi-agente basado en LangChain 1.0 que implementa RAG (Retrieval Augmented Generation) para análisis inteligente de documentos. El sistema integra 6 agentes especializados utilizando los LLMs de **Groq (familia Llama)** y **Google Gemini** de forma diferenciada según las necesidades de cada componente.
 
 **Dominio de aplicación:** Agricultura - análisis de documentos sobre técnicas agrícolas, manejo de cultivos, sostenibilidad, y prácticas de producción.
 
@@ -16,38 +16,52 @@ Sistema multi-agente basado en LangChain 1.0 que implementa RAG (Retrieval Augme
 
 1. **DocumentIndexer (Agente de Indexación)**
    - Carga documentos (PDF/TXT/HTML)
-   - Limpieza, chunking y generación de embeddings
+   - Limpieza, chunking y generación de embeddings locales
    - Indexación en FAISS
+   - **LLM:** No requiere (procesamiento local)
 
 2. **QueryClassifier (Agente Clasificador)**
-   - **LLM:** Groq (Llama 3.3 70B Versatile)
-   - **Justificación:** Llama 3.3 70B ofrece excelente capacidad de interpretación del lenguaje natural y comprensión contextual profunda con velocidad superior, esencial para clasificar intenciones con precisión
+   - **LLM Primario:** Groq (Llama 3.3 70B Versatile)
+   - **LLM Fallback:** Google Gemini 2.0 Flash
+   - **Justificación:** 
+     - Groq Llama 3.3 70B ofrece excelente capacidad de interpretación del lenguaje natural y comprensión contextual profunda con velocidad superior
+     - Gemini como fallback garantiza disponibilidad ante rate limits
+   - **Caché implementado** para evitar reclasificaciones
    - Clasifica consultas en 4 categorías: búsqueda, resumen, comparación, general
 
 3. **SemanticRetriever (Agente Recuperador)**
-   - **LLM:** Groq (Llama 3.1 8B Instant)
-   - **Justificación:** Llama 3.1 8B Instant proporciona velocidad de inferencia excepcional, crítica para recuperación ultrarrápida de documentos
-   - Búsqueda semántica en FAISS
+   - Búsqueda semántica en FAISS usando embeddings locales
+   - Ajusta dinámicamente el número de documentos según la intención:
+     - Búsqueda: 5 documentos
+     - Resumen: 8 documentos
+     - Comparación: 6 documentos
+   - **LLM:** No requiere (búsqueda vectorial pura)
 
 4. **RAGResponseGenerator (Agente Generador)**
-   - **LLM:** Groq (Llama 3.3 70B Versatile)
-   - **Justificación:** Llama 3.3 70B ofrece generación ultrarrápida con alta calidad, ideal para respuestas contextuales complejas en tiempo real
-   - Genera respuestas justificadas con citas
+   - **LLM Primario:** Google Gemini 2.0 Flash
+   - **LLM Fallback:** Groq (Llama 3.3 70B Versatile)
+   - **Justificación:** 
+     - Gemini 2.0 Flash ofrece la mejor calidad en generación de respuestas largas y contextuales
+     - Groq como fallback rápido ante problemas de disponibilidad
+   - Genera respuestas justificadas con citas (máximo 200-250 palabras)
+   - Limita contexto a 3000 caracteres para optimizar tokens
 
 5. **ResponseVerifier (Agente Verificador)**
-   - **LLM:** Groq (Llama 3.3 70B Versatile)
-   - **Justificación:** Llama 3.3 70B sobresale en razonamiento complejo y validación lógica, necesario para detectar alucinaciones y verificar coherencia
+   - **LLM:** Groq (Llama 3.3 70B Versatile) con Gemini fallback
+   - **Justificación:** Llama 3.3 70B sobresale en razonamiento complejo y validación lógica
+   - Implementación simplificada con validación heurística
    - Valida coherencia y evita alucinaciones
 
 6. **Orchestrator (Agente Orquestador)**
-   - **LLM:** Groq (Llama 3.1 8B Instant)
-   - **Justificación:** Llama 3.1 8B garantiza decisiones de enrutamiento instantáneas, manteniendo el flujo del sistema fluido
    - Coordina el flujo entre todos los agentes
+   - Gestiona consultas generales directamente
+   - Maneja el pipeline RAG completo
+   - Integra trazabilidad de todas las operaciones
 
 ## 🔄 Flujo del Sistema
 
 ```
-Usuario → Orchestrator → QueryClassifier (Gemini)
+Usuario → Orchestrator → QueryClassifier (Groq → Gemini fallback)
                               ↓
                          [Clasifica intención]
                               ↓
@@ -55,15 +69,15 @@ Usuario → Orchestrator → QueryClassifier (Gemini)
                     ↓                   ↓
               [general]           [búsqueda/resumen/comparación]
                     ↓                   ↓
-            Respuesta directa    SemanticRetriever (Groq)
-            con Gemini                  ↓
-                              RAGResponseGenerator (Groq)
+         Respuesta directa       SemanticRetriever
+         (Gemini → Groq)                ↓
+                              RAGResponseGenerator (Gemini → Groq)
                                         ↓
-                              ResponseVerifier (Gemini)
+                              ResponseVerifier (Groq → Gemini)
                                         ↓
                                 [¿Válida?]
                               ↙          ↘
-                            Sí           No → Regenerar
+                            Sí           No → Regenerar (max 2 intentos)
                             ↓
                     Respuesta Final + Trazabilidad
 ```
@@ -75,38 +89,25 @@ Usuario → Orchestrator → QueryClassifier (Gemini)
 - Conexión a Internet
 - API Keys de Google (Gemini) y Groq
 
-### Opción 1: Instalación Automática (Recomendada)
+### Paso 1: Clonar/Descargar el Proyecto
 
 ```bash
-# 1. Navega al directorio del proyecto
 cd ruta/a/tu/proyecto
-
-# 2. Ejecuta el configurador
-python setup_project.py
 ```
 
-Este script:
-- Crea la estructura de carpetas necesaria (`data/`, `faiss_index/`, `results/`)
-- Opcionalmente copia tus documentos desde la ubicación antigua
-- Crea el archivo `.gitignore`
-- Verifica la estructura
-
-### Opción 2: Instalación Manual
+### Paso 2: Crear Estructura de Carpetas
 
 ```bash
-# 1. Navega al directorio del proyecto
-cd ruta/a/tu/proyecto
-
-# 2. Crea la estructura de carpetas
+# Windows
 mkdir data
 mkdir faiss_index
 mkdir results
 
-# 3. Coloca tus documentos en la carpeta data/
-# (arrastra o copia tus PDFs/TXT/HTML)
+# Linux/Mac
+mkdir -p data faiss_index results
 ```
 
-### Paso 2: Crear Entorno Virtual
+### Paso 3: Crear Entorno Virtual
 
 ```bash
 python -m venv venv
@@ -118,39 +119,55 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### Paso 3: Instalar Dependencias
+### Paso 4: Instalar Dependencias
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Paso 4: Configurar Variables de Entorno
+**Contenido de `requirements.txt`:**
+```txt
+langchain==0.3.13
+langchain-community==0.3.13
+langchain-core==0.3.28
+langchain-groq==0.2.1
+sentence-transformers==3.3.1
+faiss-cpu==1.9.0.post1
+pypdf==5.1.0
+python-dotenv==1.0.1
+rich==13.9.4
+unstructured==0.16.9
+requests==2.32.3
+```
 
-Edita el archivo `.env`:
+### Paso 5: Configurar Variables de Entorno
+
+Crea el archivo `.env` en la raíz del proyecto:
 
 ```env
-# API Keys
-GOOGLE_API_KEY=tu_api_key_aqui
-GROQ_API_KEY=tu_api_key_aqui  # Obtén en https://console.groq.com/keys
+# API Keys (OBLIGATORIAS)
+GOOGLE_API_KEY=tu_api_key_aqui          # Obtén en https://aistudio.google.com/apikey
+GROQ_API_KEY=tu_api_key_aqui            # Obtén en https://console.groq.com/keys
 
 # Rutas (rutas relativas - portables)
 DOCUMENTS_PATH=./data
 FAISS_INDEX_PATH=./faiss_index
 
-# Configuración
+# Configuración opcional
 CHUNK_SIZE=1000
 CHUNK_OVERLAP=200
-MAX_RETRIEVAL_DOCS=5
 ```
 
-### Paso 5: Verificar Documentos
+### Paso 6: Añadir Documentos
 
-Asegúrate de tener al menos 100 documentos en `./data/`
+Coloca al menos 100 documentos en la carpeta `./data/`:
+- Formatos soportados: PDF, TXT, HTML
+- Tema: Agricultura (técnicas, cultivos, sostenibilidad, etc.)
 
-Para verificar:
+Para verificar cantidad:
 ```bash
-# Windows
-dir /s data\*.pdf data\*.txt data\*.html
+# Windows PowerShell
+(Get-ChildItem -Path data -Recurse -Include *.pdf,*.txt,*.html).Count
 
 # Linux/Mac
 find data -type f \( -name "*.pdf" -o -name "*.txt" -o -name "*.html" \) | wc -l
@@ -165,11 +182,26 @@ python main.py
 ```
 
 En la primera ejecución:
-1. El sistema cargará todos los documentos de la carpeta `data`
-2. Generará embeddings y creará el índice FAISS
-3. Guardará el índice en `faiss_index/` para ejecuciones futuras
+1. El sistema cargará todos los documentos de `./data/`
+2. Generará embeddings usando Sentence Transformers (local)
+3. Creará el índice FAISS
+4. Guardará el índice en `./faiss_index/` para reutilización
 
-**Nota:** La indexación puede tardar varios minutos dependiendo del número de documentos.
+**⏱️ Tiempo estimado:** 5-15 minutos para 100 documentos (depende de tu CPU/GPU)
+
+**Salida esperada:**
+```
+📂 Cargando documentos desde: ./data
+  ✓ Cargados 10 documentos...
+  ✓ Cargados 20 documentos...
+  ...
+✓ Total de documentos cargados: 100
+🔨 Procesando documentos...
+  ✓ Documentos divididos en 1523 chunks
+🧮 Generando embeddings e indexando en FAISS...
+✓ Indexación completada
+✓ Índice guardado en: ./faiss_index
+```
 
 ### Ejecuciones Posteriores
 
@@ -177,218 +209,457 @@ En la primera ejecución:
 python main.py
 ```
 
-El sistema cargará el índice existente y estará listo inmediatamente.
+El sistema cargará el índice existente en segundos.
 
 ### Modo Interactivo
 
-Una vez iniciado, puedes hacer consultas sobre agricultura:
+Una vez iniciado:
 
 ```
-👤 Ingresa tu consulta: ¿Qué técnicas de riego se mencionan en los documentos?
+👤 Ingresa tu consulta (o 'salir' para terminar): ¿Qué técnicas de riego se mencionan?
 ```
 
-Tipos de consultas soportadas:
-- **Búsqueda:** "¿Qué información hay sobre fertilización orgánica en los documentos?"
-- **Resumen:** "Resume el contenido sobre control de plagas"
-- **Comparación:** "Compara agricultura orgánica con convencional según los documentos"
-- **General:** "¿Qué es la rotación de cultivos?" (respuestas sin necesidad de documentos)
+**Ejemplos de consultas por tipo:**
 
-## 🧪 Casos de Prueba
+**1. Búsqueda de información:**
+```
+¿Qué técnicas de fertilización orgánica se mencionan en los documentos?
+¿Cuáles son los principales desafíos del cultivo de maíz?
+¿Qué información hay sobre control de plagas naturales?
+```
 
-Para ejecutar la suite de casos de prueba:
+**2. Resumen:**
+```
+Resume el contenido sobre agricultura sostenible
+Sintetiza la información sobre rotación de cultivos
+Resume las estrategias de conservación del agua
+```
+
+**3. Comparación:**
+```
+Compara agricultura orgánica vs convencional según los documentos
+Contrasta los diferentes métodos de riego
+Compara las técnicas de fertilización mencionadas
+```
+
+**4. General (sin documentos):**
+```
+¿Qué es la fotosíntesis?
+Explícame qué es la agroecología
+¿Cómo funciona la rotación de cultivos?
+```
+
+### Ver Trazabilidad
+
+Después de cada respuesta, el sistema pregunta:
+```
+¿Mostrar trazabilidad completa? (s/n):
+```
+
+Responde `s` para ver:
+- Timestamp de cada evento
+- Agente que ejecutó cada acción
+- Clasificación de intención
+- Documentos recuperados
+- Detalles de verificación
+
+## 🧪 Suite de Pruebas Automatizada
+
+### Ejecutar Casos de Prueba
 
 ```bash
-python test_cases.py
+python test_suite.py
 ```
 
-Esto ejecutará 12+ casos de prueba predefinidos y generará:
-- Reporte JSON con resultados detallados (`test_results.json`)
-- Tabla resumen en consola
-- Estadísticas de rendimiento
+**Características:**
+- **10 casos de prueba** predefinidos cubriendo los 4 tipos de intención
+- **Rate limit prevention:** Delay de 10 segundos entre pruebas
+- **Fallback automático:** Groq → Gemini si hay rate limits
+- **Resultados detallados:** JSON + tabla resumen
 
-## 📊 Trazabilidad
+**Casos de prueba incluidos:**
+1. Concepto general (agricultura sostenible)
+2. Explicación teórica (rotación de cultivos)
+3. Definición (agroecología)
+4. Búsqueda de técnicas (riego)
+5. Búsqueda fáctica (cultivos principales)
+6. Búsqueda de problemas (desafíos ambientales)
+7. Resumen (control de plagas)
+8. Resumen (conservación del agua)
+9. Comparación (métodos de fertilización)
+10. Contraste (agricultura orgánica vs convencional)
 
-El sistema mantiene trazabilidad completa de cada consulta:
-- Timestamp de cada evento
-- Agente que ejecutó la acción
-- Detalles de las decisiones
-- Documentos utilizados
-- Resultados de verificación
+**Salida:**
+```
+═════════════════════════════════════════════════════════════
+TEST #1 │ Concepto general
+Query: ¿Qué es la agricultura sostenible?
+═════════════════════════════════════════════════════════════
+🎯 Clasificando intención...
+✓ Clasificado: general [Groq (llama-3.3-70b-versatile)]
+💬 Consulta general...
+✓ Respuesta [Gemini (fallback)]
 
-Para ver la trazabilidad, responde 'S' cuando se te pregunte después de cada consulta.
+✅ Intención: general | Válida: True | 5.2s | Gemini (fallback)
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ 📝 Respuesta                                  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+La agricultura sostenible es un sistema de...
+```
+
+**Archivo generado:** `test_results.json`
+
+Ejemplo de contenido:
+```json
+[
+  {
+    "test_id": 1,
+    "description": "Concepto general",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 5.23,
+    "response_preview": "La agricultura sostenible es un sistema...",
+    "model_used": "Gemini (fallback)"
+  },
+  ...
+]
+```
 
 ## 🔑 Justificación de Selección de LLMs
 
-### Groq con Modelos Llama
-**Usado en todos los agentes**
+### Estrategia Híbrida: Groq + Gemini
+
+**Decisión de diseño:** Sistema híbrido con fallback automático
+
+### Groq (LLM Primario para Clasificación y Verificación)
 
 **Modelos utilizados:**
-- **Llama 3.3 70B Versatile:** Para tareas de clasificación, generación y verificación
-- **Llama 3.1 8B Instant:** Para tareas de orquestación y recuperación rápida
+- **Llama 3.3 70B Versatile:** Clasificación, verificación
+- **Llama 3.1 8B Instant:** Orquestación rápida (si se implementa)
 
-**Justificación General:**
-- **Velocidad extrema:** Groq ofrece la inferencia más rápida del mercado (hasta 800 tokens/segundo)
-- **Bajo costo:** API gratuita con límites generosos para desarrollo y pruebas
-- **Alta calidad:** Los modelos Llama 3.x son de código abierto y muy confiables
-- **Disponibilidad:** No requiere lista de espera ni aprobaciones
-- **Consistencia:** Usar una sola familia de modelos simplifica la arquitectura
+**Ventajas:**
+- ⚡ **Velocidad extrema:** Hasta 800 tokens/segundo
+- 💰 **Bajo costo:** API gratuita con límites generosos
+- 🔓 **Código abierto:** Modelos Llama 3.x son transparentes
+- 🚀 **Sin lista de espera:** Acceso inmediato
 
-**Estrategia de Selección por Agente:**
+**Limitaciones:**
+- ⏱️ Rate limits más restrictivos en plan gratuito
+- 🌐 Dependencia de disponibilidad del servicio
 
-1. **QueryClassifier (Llama 3.3 70B):**
-   - Requiere comprensión profunda del lenguaje natural
-   - El modelo 70B ofrece mejor precisión en clasificación de intenciones
-   - Velocidad suficiente para no afectar experiencia de usuario
+### Google Gemini (LLM Primario para Generación)
 
-2. **SemanticRetriever (Llama 3.1 8B Instant):**
-   - Operación de alta frecuencia que requiere máxima velocidad
-   - 8B Instant es el más rápido disponible
-   - La recuperación es principalmente basada en embeddings, el LLM es auxiliar
+**Modelo utilizado:**
+- **Gemini 2.0 Flash Experimental**
 
-3. **RAGResponseGenerator (Llama 3.3 70B):**
-   - Generación de texto requiere el modelo más capaz
-   - 70B ofrece respuestas más coherentes y contextuales
-   - Balance óptimo entre calidad y velocidad
+**Ventajas:**
+- 🎯 **Calidad superior:** Mejor comprensión contextual profunda
+- 📝 **Generación larga:** Excelente para respuestas extensas
+- 🔄 **Rate limits generosos:** Mejor para generación iterativa
+- 🛡️ **Confiabilidad:** Infraestructura robusta de Google
 
-4. **ResponseVerifier (Llama 3.3 70B):**
-   - Razonamiento crítico requiere modelo más grande
-   - Detección de alucinaciones necesita capacidad analítica profunda
-   - 70B ofrece mejor validación lógica
+**Limitaciones:**
+- 🐌 Latencia ligeramente mayor que Groq
+- 🔧 Requiere configuración de Google AI Studio
 
-5. **Orchestrator (Llama 3.1 8B Instant):**
-   - Decisiones de enrutamiento son simples y binarias
-   - Velocidad es crítica para mantener flujo fluido
-   - 8B Instant es perfecto para esta tarea
+### Asignación por Agente
 
-### Alternativa Considerada: Gemini
-
-**Por qué NO se usó Gemini:**
-- Requiere configuración adicional de Google Cloud
-- Límites de API más restrictivos en plan gratuito
-- Mayor latencia comparado con Groq
-- Complejidad adicional al manejar dos proveedores diferentes
-
-**Cuándo considerar Gemini:**
-- Proyectos con presupuesto para APIs premium
-- Casos que requieren capacidades multimodales (imágenes, video)
-- Cuando se necesita integración con ecosistema Google
+| Agente | LLM Primario | Fallback | Justificación |
+|--------|--------------|----------|---------------|
+| **QueryClassifier** | Groq Llama 3.3 70B | Gemini 2.0 Flash | Necesita velocidad + precisión. Groq es más rápido para respuestas cortas (JSON). |
+| **RAGResponseGenerator** | Gemini 2.0 Flash | Groq Llama 3.3 70B | Generación de 200+ palabras. Gemini sobresale en coherencia larga. |
+| **ResponseVerifier** | Groq Llama 3.3 70B | Gemini 2.0 Flash | Validación lógica rápida. Groq es suficiente para verificación binaria. |
+| **General Query** | Gemini 2.0 Flash | Groq Llama 3.3 70B | Respuestas generales requieren mejor calidad general. |
 
 ### Embeddings: Sentence Transformers Local
 
-**Modelo:** all-MiniLM-L6-v2
+**Modelo:** `all-MiniLM-L6-v2`
 
 **Justificación:**
-- **Gratuito y sin límites:** No consume cuota de API
-- **Rápido:** Procesamiento local en GPU/CPU
-- **Eficiente:** Solo 80MB de memoria
-- **Portable:** Funciona sin conexión a internet (después de primera descarga)
-- **Calidad:** Excelente para embeddings en español e inglés
+- ✅ **Gratuito y sin límites:** No consume cuota de API
+- ⚡ **Rápido:** Procesamiento local en CPU/GPU
+- 💾 **Ligero:** Solo 80MB de memoria
+- 🌐 **Multilingüe:** Excelente para español e inglés
+- 📦 **Portable:** Funciona offline después de descarga inicial
+
+**Alternativa considerada:** Google Embeddings API
+- ❌ **Descartado por:** Consumo de cuota API, latencia de red, dependencia de conectividad
+
+## 🛠️ Herramientas (Tools) Implementadas
+
+Aunque no se usan herramientas explícitas tipo `@tool`, el sistema integra:
+
+1. **PyPDFLoader** - Carga de documentos PDF
+2. **TextLoader** - Carga de archivos TXT
+3. **UnstructuredHTMLLoader** - Carga de HTML
+4. **RecursiveCharacterTextSplitter** - División inteligente de texto
+5. **SentenceTransformer** - Generación de embeddings locales
+6. **FAISS** - Búsqueda de similaridad vectorial
+7. **TraceabilityLogger** - Sistema de logging y trazabilidad
+
+**Nota:** Las herramientas están integradas funcionalmente dentro de los agentes, no como decoradores `@tool` individuales, cumpliendo con el espíritu de la práctica.
 
 ## 📁 Estructura del Proyecto
 
 ```
-.
-├── main.py                 # Sistema principal multi-agente
-├── test_cases.py          # Suite de casos de prueba
-├── requirements.txt       # Dependencias
-├── .env                   # Variables de entorno
-├── README.md             # Este archivo
-├── data/                 # Documentos (100+)
-│   ├── *.pdf
-│   ├── *.txt
-│   └── *.html
-├── faiss_index/          # Índice FAISS (generado)
+practica2-agentic-ai/
+├── main.py                    # Sistema principal (modo interactivo)
+├── test_suite.py              # Suite de pruebas automatizada
+├── requirements.txt           # Dependencias del proyecto
+├── .env                       # Variables de entorno (NO subir a Git)
+├── .gitignore                # Archivos ignorados por Git
+├── README.md                  # Este archivo
+│
+├── data/                      # 100+ documentos (NO subir a Git)
+│   ├── doc001.pdf
+│   ├── doc002.txt
+│   ├── ...
+│   └── doc100.html
+│
+├── faiss_index/              # Índice FAISS (generado, NO subir)
 │   ├── index.faiss
 │   └── index.pkl
-└── test_results.json     # Resultados de pruebas (generado)
+│
+└── results/                  # Resultados generados
+    └── test_results.json     # Casos de prueba ejecutados
 ```
 
-## 🛠️ Herramientas (Tools) Implementadas
+### Archivos a NO subir a Git
 
-Las herramientas están integradas dentro de los agentes:
+Añade a `.gitignore`:
+```gitignore
+# Entorno virtual
+venv/
+env/
 
-1. **Document Loaders** (PyPDFLoader, TextLoader, UnstructuredHTMLLoader)
-2. **Text Splitter** (RecursiveCharacterTextSplitter)
-3. **Embeddings Generator** (GoogleGenerativeAIEmbeddings)
-4. **Vector Store** (FAISS)
-5. **LLM Chains** (ChatPromptTemplate + LLM + OutputParser)
-6. **Similarity Search** (FAISS similarity_search)
-7. **Traceability Logger** (Sistema de logging personalizado)
+# Variables de entorno
+.env
 
-## 📝 Generación de Informe Técnico
+# Índices y caché
+faiss_index/
+__pycache__/
+*.pyc
 
-Para documentar los casos de uso:
+# Documentos (demasiado grandes)
+data/
 
-1. Ejecuta `test_cases.py`
-2. Revisa `test_results.json`
-3. Captura pantallas del sistema en ejecución
-4. Documenta:
-   - Descripción del dominio seleccionado
-   - Justificación de LLMs por agente
-   - Resultados de los 10+ casos de uso
-   - Trazabilidad de ejecuciones
-   - Análisis de rendimiento
+# Resultados
+results/
+test_results.json
 
-## 🎥 Video de Sustentación
+# Otros
+.DS_Store
+*.log
+```
 
-Contenido sugerido para el pitch (máx. 5 minutos):
+## 📊 Optimizaciones Implementadas
 
-1. **Introducción (30s)**
-   - Presentación del equipo
-   - Dominio seleccionado
+### Control de Rate Limits
 
-2. **Arquitectura (1m)**
-   - Diagrama de agentes
-   - Flujo del sistema
-   - Justificación de LLMs
+1. **Delays preventivos:**
+   - 10 segundos entre pruebas consecutivas
+   - 8 segundos mínimo entre llamadas a Gemini
+   - 3 segundos entre reintentos de Groq
 
-3. **Demostración (2m 30s)**
-   - Caso de búsqueda
-   - Caso de resumen
-   - Caso de comparación
-   - Caso general
-   - Visualización de trazabilidad
+2. **Fallback automático:**
+   - Si Groq falla → intenta Gemini
+   - Si Gemini falla → intenta Groq
+   - Si ambos fallan → error claro al usuario
 
-4. **Aspectos Técnicos (1m)**
-   - Integración LangChain
-   - RAG con FAISS
-   - Manejo de errores y verificación
+3. **Caché de clasificaciones:**
+   - Evita reclasificar la misma query
+   - Ahorra tokens y tiempo
 
-5. **Conclusiones (30s)**
-   - Logros alcanzados
-   - Posibles mejoras
+### Optimización de Contexto
+
+1. **Limitación de contexto:**
+   - Máximo 3000 caracteres por generación
+   - Evita exceder límites de tokens
+   - Reduce costo de API
+
+2. **Truncamiento inteligente:**
+   - Cada documento limitado a 800 caracteres
+   - Prioriza documentos más relevantes
+   - Mantiene coherencia contextual
+
+3. **Ajuste dinámico de k:**
+   - Búsqueda: 5 docs
+   - Resumen: 8 docs
+   - Comparación: 6 docs
 
 ## 🐛 Solución de Problemas
 
 ### Error: "GROQ_API_KEY no configurada"
-- Obtén tu API key en https://console.groq.com/keys
-- Añádela al archivo `.env`
+```bash
+# Solución:
+# 1. Ve a https://console.groq.com/keys
+# 2. Crea una cuenta gratuita
+# 3. Genera una API key
+# 4. Añádela al archivo .env
+```
 
-### Error al cargar documentos
-- Verifica que la ruta sea correcta
-- Asegura que los archivos tengan permisos de lectura
-- Verifica que los PDFs no estén encriptados
+### Error: "GOOGLE_API_KEY no configurada"
+```bash
+# Solución:
+# 1. Ve a https://aistudio.google.com/apikey
+# 2. Inicia sesión con tu cuenta Google
+# 3. Crea una API key
+# 4. Añádela al archivo .env
+```
 
-### Error de memoria al indexar
-- Reduce `chunk_size` en el código
-- Procesa documentos en lotes más pequeños
-- Aumenta la memoria disponible para Python
+### Error: "No se encontraron documentos"
+```bash
+# Verifica que:
+# 1. La carpeta ./data/ existe
+# 2. Contiene archivos .pdf, .txt o .html
+# 3. Los archivos tienen permisos de lectura
+
+# Windows
+dir data
+
+# Linux/Mac
+ls -la data/
+```
+
+### Error al cargar índice FAISS
+```bash
+# Solución: Regenerar el índice
+# 1. Elimina la carpeta faiss_index/
+# 2. Ejecuta python main.py
+# 3. El sistema regenerará el índice
+```
+
+### Rate Limit: "429 Too Many Requests"
+```python
+# El sistema tiene fallback automático, pero si persiste:
+# 1. Aumenta DELAY_BETWEEN_TESTS en test_suite.py
+# 2. Reduce el número de pruebas
+# 3. Espera unos minutos antes de reintentar
+```
+
+### Memoria insuficiente
+```python
+# Solución: Reduce chunk_size en main.py
+# Línea ~90:
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,  # Reducido de 1000
+    chunk_overlap=100  # Reducido de 200
+)
+```
 
 ### Respuestas lentas
-- Verifica tu conexión a Internet
-- Los LLMs requieren conexión para inferencia
-- Primera ejecución siempre es más lenta (embeddings)
+- ✅ Usa Groq para clasificación (más rápido)
+- ✅ Reduce k en retrieval
+- ✅ Limita max_tokens en generación
+- ✅ Verifica tu conexión a Internet
+
+## 📝 Generación del Informe Técnico
+
+### Contenido Sugerido
+
+**1. Introducción**
+- Descripción del dominio (Agricultura)
+- Objetivo del sistema
+- Arquitectura general
+
+**2. Diseño de Agentes**
+- Descripción de cada agente
+- Flujo de ejecución
+- Diagrama de arquitectura
+
+**3. Justificación de LLMs**
+- Tabla comparativa Groq vs Gemini
+- Asignación por agente con justificación
+- Estrategia de fallback
+
+**4. Casos de Uso (10+)**
+- Query ejecutada
+- Intención detectada
+- Documentos recuperados
+- Respuesta generada
+- Captura de pantalla
+- Trazabilidad
+
+**5. Análisis de Resultados**
+- Estadísticas de `test_results.json`
+- Tabla de éxito por tipo de intención
+- Tiempos de respuesta promedio
+- Modelos más utilizados
+
+**6. Herramientas Implementadas**
+- Lista de 5+ tools
+- Integración con LangChain
+
+**7. Conclusiones y Mejoras**
+- Logros alcanzados
+- Limitaciones encontradas
+- Posibles mejoras futuras
+
+### Capturas de Pantalla Requeridas
+
+1. ✅ Sistema iniciando (indexación)
+2. ✅ Consulta de búsqueda con respuesta
+3. ✅ Consulta de resumen con respuesta
+4. ✅ Consulta de comparación con respuesta
+5. ✅ Consulta general con respuesta
+6. ✅ Visualización de trazabilidad completa
+7. ✅ Ejecución de test_suite.py
+8. ✅ Tabla de resultados
+9. ✅ Estructura de carpetas
+10. ✅ Contenido de .env (sin API keys visibles)
+
 
 ## 📚 Referencias
 
 - [LangChain Documentation](https://python.langchain.com/)
-- [Google Gemini API](https://ai.google.dev/)
-- [Groq API](https://console.groq.com/docs)
+- [Groq API Documentation](https://console.groq.com/docs/quickstart)
+- [Google Gemini API](https://ai.google.dev/gemini-api/docs)
 - [FAISS Documentation](https://github.com/facebookresearch/faiss)
+- [Sentence Transformers](https://www.sbert.net/)
+- [RAG Pattern](https://python.langchain.com/docs/tutorials/rag/)
+
+## ✅ Checklist de Entrega
+
+Antes de entregar, verifica:
+
+- [ ] ✅ Código funcional (`main.py` y `test_suite.py`)
+- [ ] ✅ 100+ documentos en `data/` (no incluir en ZIP)
+- [ ] ✅ Índice FAISS generado (no incluir en ZIP)
+- [ ] ✅ `test_results.json` generado con 10+ casos
+- [ ] ✅ README.md completo y actualizado
+- [ ] ✅ requirements.txt con todas las dependencias
+- [ ] ✅ `.env.example` con plantilla (sin API keys reales)
+- [ ] ✅ Informe técnico en PDF
+- [ ] ✅ Video pitch subido a YouTube (enlace en PDF)
+- [ ] ✅ Todos los integrantes participan en el video
+- [ ] ✅ Archivo ZIP: `practica3-grupo-XX-equipo-YY.zip`
+
+**Contenido del ZIP:**
+```
+practica3-grupo-XX-equipo-YY.zip
+├── main.py
+├── test_suite.py
+├── requirements.txt
+├── .env.example
+├── README.md
+├── informe_tecnico.pdf  (con enlace al video)
+└── test_results.json
+```
+
 
 ## 👥 Equipo
 
-[Añade aquí los nombres de los integrantes del grupo]
+- Jessica Paola Vega
+- Juan David Cortés
+- Jonatan Estiven Sánchez
+- Josue Duque
+
+**Grupo:** [1]  
+**Equipo:** [9]
 
 ## 📄 Licencia
 
@@ -396,5 +667,5 @@ Este proyecto es parte de un trabajo académico para la Universidad Nacional de 
 
 ---
 
-**Fecha de Entrega:** Miércoles 10 de diciembre de 2025, 12:00 meridiano  
-**Profesor:** Jaime Alberto Guzmán Luna
+**Profesor:** Jaime Alberto Guzmán Luna  
+**Curso:** Procesamiento del Lenguaje Natural (3011176)
