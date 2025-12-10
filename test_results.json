@@ -1,0 +1,122 @@
+[
+  {
+    "test_id": 1,
+    "description": "Concepto general",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 65.498076,
+    "response_preview": "La agricultura sostenible se refiere a prácticas agrícolas que buscan equilibrar la producción de alimentos con la protección del medio ambiente y el bienestar social. Esto implica:\n\n* Uso eficiente d",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 2,
+    "description": "Explicación teórica",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 65.938609,
+    "response_preview": "La rotación de cultivos es una práctica agrícola que consiste en cambiar el tipo de cultivo que se siembra en un mismo terreno de un año a otro. Esto se hace para:\n\n* **Mantener la fertilidad del suel",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 3,
+    "description": "Definición",
+    "expected_intent": "general",
+    "actual_intent": "general",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 66.269718,
+    "response_preview": "La agroecología es una disciplina científica y un enfoque práctico que busca entender y mejorar la relación entre los sistemas agrícolas y el medio ambiente. Se centra en la producción de alimentos de",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 4,
+    "description": "Búsqueda técnicas",
+    "expected_intent": "busqueda",
+    "actual_intent": "busqueda",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 66.940771,
+    "response_preview": "No se mencionan técnicas de riego específicas en los documentos proporcionados. Los documentos se enfocan en temas como la agricultura y la deforestación en Perú, la construcción social de riesgos, y ",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 5,
+    "description": "Búsqueda fáctica",
+    "expected_intent": "busqueda",
+    "actual_intent": "busqueda",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 66.138017,
+    "response_preview": "Según el contexto proporcionado, no se mencionan explícitamente los principales cultivos descritos. Sin embargo, se hace referencia a algunos cultivos y productos agrícolas, como:\n\n* Banano (en el Doc",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 6,
+    "description": "Búsqueda problemas",
+    "expected_intent": "busqueda",
+    "actual_intent": "busqueda",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 66.242561,
+    "response_preview": "Se mencionan varios desafíos ambientales en los documentos proporcionados. En el Doc 2, se destaca la importancia de mantener la sostenibilidad del medio ambiente mientras se busca la seguridad alimen",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 7,
+    "description": "Resumen plagas",
+    "expected_intent": "resumen",
+    "actual_intent": "resumen",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 66.093286,
+    "response_preview": "**Resumen del Control de Plagas**\n\nEl control de plagas es una técnica prometedora que se aplica como parte de un enfoque de manejo integrado de plagas. Consiste en la producción masiva, esterilizació",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 8,
+    "description": "Resumen agua",
+    "expected_intent": "resumen",
+    "actual_intent": "resumen",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 65.474868,
+    "response_preview": "**Estrategias de Conservación del Agua en la Agricultura**\n\nA continuación, se presentan las estrategias de conservación del agua en la agricultura:\n\n* **Agricultura de Conservación (AC)**: modelo rev",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 9,
+    "description": "Comparar métodos",
+    "expected_intent": "comparacion",
+    "actual_intent": "comparacion",
+    "intent_match": true,
+    "response_valid": true,
+    "success": true,
+    "duration_seconds": 65.516122,
+    "response_preview": "La comparación de los diferentes métodos de fertilización se centra en la eficacia y sostenibilidad de cada enfoque. El Doc 1 destaca la importancia de considerar las condiciones del agroecosistema y ",
+    "model_used": "Groq (llama-3.3-70b-versatile)"
+  },
+  {
+    "test_id": 10,
+    "description": "Contraste sistemas",
+    "expected_intent": "comparacion",
+    "actual_intent": "comparacion",
+    "intent_match": true,
+    "response_valid": false,
+    "success": false,
+    "duration_seconds": 178.549022,
+    "response_preview": "Error: Máximo de reintentos Gemini",
+    "model_used": "ERROR"
+  }
+]
