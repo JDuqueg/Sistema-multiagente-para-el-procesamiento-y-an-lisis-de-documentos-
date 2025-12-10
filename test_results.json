@@ -6,13 +6,13 @@
     "expected_intent": "general",
     "actual_intent": "general",
     "intent_match": true,
-    "response_valid": true,
-    "success": true,
-    "duration_seconds": 2.22327,
-    "response_preview": "**Agricultura Sostenible: Un Enfoque para el Futuro**\n\nLa agricultura sostenible es un enfoque agrícola que busca producir alimentos de manera eficiente y respetuosa con el medio ambiente, al mismo tiempo que se garantiza la viabilidad económica y social de las comunidades rurales. Este enfoque se c",
+    "response_valid": false,
+    "success": false,
+    "duration_seconds": 72.856838,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 0,
     "verification_confidence": 1.0,
-    "timestamp": "2025-12-10T04:12:38.795591"
+    "timestamp": "2025-12-10T04:20:25.492208"
   },
   {
     "test_id": 2,
@@ -21,13 +21,13 @@
     "expected_intent": "general",
     "actual_intent": "general",
     "intent_match": true,
-    "response_valid": true,
-    "success": true,
-    "duration_seconds": 2.592016,
-    "response_preview": "**Introducción a la rotación de cultivos**\n\nLa rotación de cultivos es una práctica agrícola que consiste en cambiar el tipo de cultivo que se siembra en una parcela de tierra de un año a otro. Esta técnica es fundamental para mantener la fertilidad del suelo, reducir la erosión y mejorar la product",
+    "response_valid": false,
+    "success": false,
+    "duration_seconds": 72.371643,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 0,
     "verification_confidence": 1.0,
-    "timestamp": "2025-12-10T04:12:43.036127"
+    "timestamp": "2025-12-10T04:21:43.360199"
   },
   {
     "test_id": 3,
@@ -36,13 +36,13 @@
     "expected_intent": "general",
     "actual_intent": "general",
     "intent_match": true,
-    "response_valid": true,
-    "success": true,
-    "duration_seconds": 1.978695,
-    "response_preview": "**Introducción a la Agroecología**\n\nLa agroecología es una disciplina científica que se enfoca en el estudio y la práctica de la agricultura de manera sostenible y respetuosa con el medio ambiente. Combina principios de la ecología, la biología, la sociología y la economía para entender y gestionar ",
+    "response_valid": false,
+    "success": false,
+    "duration_seconds": 72.683586,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 0,
     "verification_confidence": 1.0,
-    "timestamp": "2025-12-10T04:12:47.652865"
+    "timestamp": "2025-12-10T04:23:00.737496"
   },
   {
     "test_id": 4,
@@ -51,13 +51,13 @@
     "expected_intent": "busqueda",
     "actual_intent": "busqueda",
     "intent_match": true,
-    "response_valid": true,
-    "success": true,
-    "duration_seconds": 1.451268,
-    "response_preview": "No se mencionan técnicas de riego en los documentos proporcionados. La información disponible se enfoca en la deforestación en la Amazonia peruana, la construcción social de riesgos, y el léxico relativo a las huertas en un libro de agricultura, pero no se proporciona información específica sobre té",
+    "response_valid": false,
+    "success": false,
+    "duration_seconds": 72.90196,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 5,
-    "verification_confidence": 0.9,
-    "timestamp": "2025-12-10T04:12:51.646129"
+    "verification_confidence": 0,
+    "timestamp": "2025-12-10T04:24:18.428868"
   },
   {
     "test_id": 5,
@@ -66,13 +66,13 @@
     "expected_intent": "busqueda",
     "actual_intent": "busqueda",
     "intent_match": true,
-    "response_valid": true,
-    "success": true,
-    "duration_seconds": 3.733948,
-    "response_preview": "No se mencionan explícitamente los principales cultivos en el contexto proporcionado. Sin embargo, se hace referencia al cultivo del banano en el Documento 5. Además, en el Documento 1 se menciona la evolución de los cultivos actuales y las posibles alternativas de cultivos futuras, pero no se propo",
+    "response_valid": false,
+    "success": false,
+    "duration_seconds": 145.677002,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 5,
-    "verification_confidence": 0.7,
-    "timestamp": "2025-12-10T04:12:55.114183"
+    "verification_confidence": 0,
+    "timestamp": "2025-12-10T04:25:36.342813"
   },
   {
     "test_id": 6,
@@ -83,11 +83,11 @@
     "intent_match": true,
     "response_valid": false,
     "success": false,
-    "duration_seconds": 0.190194,
-    "response_preview": "Error en generación: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jd2g1jg0e6b88vtc1d6c470g` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99997, Requested 997. Please try again in 14m18.815999999s. Need ",
+    "duration_seconds": 72.854055,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 5,
     "verification_confidence": 0,
-    "timestamp": "2025-12-10T04:13:00.859377"
+    "timestamp": "2025-12-10T04:28:07.036009"
   },
   {
     "test_id": 7,
@@ -98,11 +98,11 @@
     "intent_match": true,
     "response_valid": false,
     "success": false,
-    "duration_seconds": 0.26578,
-    "response_preview": "Error en generación: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jd2g1jg0e6b88vtc1d6c470g` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99995, Requested 996. Please try again in 14m16.224s. Need more t",
+    "duration_seconds": 72.864194,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 8,
     "verification_confidence": 0,
-    "timestamp": "2025-12-10T04:13:03.068339"
+    "timestamp": "2025-12-10T04:29:24.904606"
   },
   {
     "test_id": 8,
@@ -113,11 +113,11 @@
     "intent_match": true,
     "response_valid": false,
     "success": false,
-    "duration_seconds": 0.541689,
-    "response_preview": "Error en generación: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jd2g1jg0e6b88vtc1d6c470g` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99992, Requested 953. Please try again in 13m36.48s. Need more to",
+    "duration_seconds": 72.951051,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 8,
     "verification_confidence": 0,
-    "timestamp": "2025-12-10T04:13:05.347902"
+    "timestamp": "2025-12-10T04:30:42.785378"
   },
   {
     "test_id": 9,
@@ -128,11 +128,11 @@
     "intent_match": true,
     "response_valid": false,
     "success": false,
-    "duration_seconds": 0.320929,
-    "response_preview": "Error en generación: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jd2g1jg0e6b88vtc1d6c470g` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99989, Requested 988. Please try again in 14m4.127999999s. Need m",
+    "duration_seconds": 73.243269,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 6,
     "verification_confidence": 0,
-    "timestamp": "2025-12-10T04:13:07.900392"
+    "timestamp": "2025-12-10T04:32:00.752114"
   },
   {
     "test_id": 10,
@@ -143,10 +143,10 @@
     "intent_match": true,
     "response_valid": false,
     "success": false,
-    "duration_seconds": 0.276969,
-    "response_preview": "Error en generación: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jd2g1jg0e6b88vtc1d6c470g` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99986, Requested 880. Please try again in 12m28.223999999s. Need ",
+    "duration_seconds": 72.409297,
+    "response_preview": "Error: Máximo de reintentos alcanzado",
     "documents_count": 6,
     "verification_confidence": 0,
-    "timestamp": "2025-12-10T04:13:10.234827"
+    "timestamp": "2025-12-10T04:33:19.010085"
   }
 ]
